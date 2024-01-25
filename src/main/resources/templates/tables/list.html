@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title th:text="Столики"></title>
+
+     <th:block th:insert="~{fragments/header.html :: head}"></th:block>
+</head>
+<body>
+<div class="container">
+     <th:block th:insert="~{fragments/header.html :: header}"></th:block>
+
+</div>
+<div class="container">
+    <a class="btn btn-primary" th:href="${'/tables/new'}"> Создать новый столик </a>
+    <div class="container" th:if="${not #lists.isEmpty(tables)}">
+        <h2> Список столиков </h2>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th th:text="ID"></th>
+                <th th:text="Номер"></th>
+                <th th:text="Категория"></th>
+                <th th:text="Действия"></th>
+            </tr>
+            <tr th:each="table : ${tables}">
+                <td th:text="${table.id}"></td>
+                <td th:text="${table.number}"></td>
+                <td th:text="${table.type.status}"></td>
+                <td>
+                    <ul class="list-inline">
+                        <li><a th:href="@{/tables/delete/{id}(id=${table.getId()})}" th:text="Удалить"></a></li>
+                        <li><a th:href="@{/tables/edit/{id}(id=${table.getId()})}" th:text="Редактировать"></a></li>
+                        <li><a th:href="@{/tables/details/{id}(id=${table.id})}" th:text="Карточка"></a></li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

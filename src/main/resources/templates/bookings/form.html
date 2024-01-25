@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title th:text="'Забронировать столик'"></title>
+
+    <th:block th:insert="~{fragments/header.html :: head}"></th:block>
+</head>
+<body>
+<div class="container">
+    <th:block th:insert="~{fragments/header.html :: header}"></th:block>
+
+</div>
+<div>
+    <h2 th:text="'Забронировать столик'"></h2>
+    <form class="form-horizontal" th:object="${booking}" th:action="@{/bookings/save}" method="post">
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" th:text="'Имя гостя '">'</label>
+            <div class="col-sm-10">
+                <div class="col-sm-10">
+                    <input type="text" placeholder="Имя гостя" class="form-control"
+                           th:field="*{visitorName}" th:required="required"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" th:text="'Номер столика'"></label>
+            <div class="col-sm-10">
+                <div class="col-sm-10">
+                    <input type="number" placeholder="Введите номер столика" class="form-control"
+                           th:field="*{table.number}" th:required="required" readonly/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" th:text="'Дата визита'"></label>
+            <div class="col-sm-10">
+                <div class="col-sm-10">
+                    <input type="datetime-local" placeholder="Введите дату визитаа" class="form-control"
+                           th:field="*{visitTime}" th:required="required" readonly/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" th:text="'Продолжительность визита'"></label>
+            <div class="col-sm-10">
+                <div class="col-sm-10">
+                    <input type="number" placeholder="Введите продолжительность визита" class="form-control"
+                           th:field="*{forHowLong}" th:required="required" readonly/>
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <button type="submit" class="btn btn-default btn-block" th:text="'Забронировать'"></button>
+        </div>
+    </form>
+</div>
+
+
+</body>
+</html>

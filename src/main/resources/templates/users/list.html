@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title th:text="'Список пользователей'"></title>
+
+    <th:block th:insert="~{fragments/header.html :: head}"></th:block>
+</head>
+<body>
+<div class="container">
+    <th:block th:insert="~{fragments/header.html :: header}"></th:block>
+</div>
+
+<div>
+    <div class="container">
+        <a class="btn btn-primary" th:href="${'/users/new'}"> Добавить нового пользователя </a>
+    </div>
+
+    <div class="container" th:if="${not #lists.isEmpty(activeUsers)}">
+
+        <h2> Список активных пользователей </h2>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th th:text="ID"></th>
+                <th th:text="'Имя пользователя'"></th>
+                <th th:text="Роль"></th>
+                <th th:text="'Пользователь активен'"></th>
+                <th th:text="Действия"></th>
+            </tr>
+            <tr th:each="user : ${activeUsers}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.authorities}"></td>
+                <td th:text="${user.enabled ? 'Активен' : 'Не активен'}"></td>
+                <td>
+                    <ul class="list-inline">
+<!--                        <li><a th:href="@{/clients/delete/{id}(id=${user.getId()})}" th:text="Удалить"></a></li>-->
+                        <li><a th:href="@{/users/edit/{id}(id=${user.getId()})}" th:text="Изменить"></a></li>
+                        <li><a th:href="@{/users/details/{id}(id=${user.getId()})}" th:text="Карточка"></a></li>
+                        <li><a th:if="${user.getBookings().isEmpty() && !user.getUsername().equals('super')}" th:href="@{/users/delete/{id}(id=${user.getId()})}" th:text="Удалить"></a></li>
+
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="container" th:if="${not #lists.isEmpty(deactivatedUsers)}">
+
+        <h2> Список заблокированных пользователей </h2>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th th:text="ID"></th>
+                <th th:text="'Имя пользователя'"></th>
+                <th th:text="Роль"></th>
+                <th th:text="'Пользователь активен'"></th>
+                <th th:text="Действия"></th>
+            </tr>
+            <tr th:each="user : ${deactivatedUsers}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.authorities}"></td>
+                <td th:text="${user.enabled ? 'Активен' : 'Не активен'}"></td>
+                <td>
+                    <ul class="list-inline">
+                        <!--                        <li><a th:href="@{/clients/delete/{id}(id=${user.getId()})}" th:text="Удалить"></a></li>-->
+                        <li><a th:href="@{/users/edit/{id}(id=${user.getId()})}" th:text="Изменить"></a></li>
+                        <li><a th:href="@{/users/details/{id}(id=${user.getId()})}" th:text="Карточка"></a></li>
+                        <li><a th:if="${user.getBookings().isEmpty() && !user.getUsername().equals('super')}" th:href="@{/users/delete/{id}(id=${user.getId()})}" th:text="Удалить"></a></li>
+
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

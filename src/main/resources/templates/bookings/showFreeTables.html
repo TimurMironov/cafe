@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title th:text="'Свободные столики'"></title>
+
+    <th:block th:insert="~{fragments/header.html :: head}"></th:block>
+</head>
+<body>
+<div class="container">
+    <th:block th:insert="~{fragments/header.html :: header}"></th:block>
+
+</div>
+<div class="container">
+    <h2> Свободные столики на выбранный период времени</h2>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th th:text="ID"></th>
+            <th th:text="Номер"></th>
+            <th th:text="Категория"></th>
+            <th th:text="Действия"></th>
+        </tr>
+        <tr th:each="table : ${freeTables}">
+            <td th:text="${table.id}"></td>
+            <td th:text="${table.number}"></td>
+            <td th:text="${table.type.status}"></td>
+            <td>
+                <form th:object="${checkFree}" th:action="@{/bookings/new/{id}(id=${table.getId()})}" method="get">
+                    <input type="hidden" th:field="*{visitTime}"/>
+                    <input type="hidden" th:field="*{forHowLong}" />
+                    <div>
+                        <button type="submit" class="btn btn-default btn-block" th:text="'Забронировать'"></button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

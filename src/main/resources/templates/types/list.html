@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title th:text="Категории"></title>
+
+    <th:block th:insert="~{fragments/header.html :: head}"></th:block>
+</head>
+<body>
+<div class="container">
+    <th:block th:insert="~{fragments/header.html :: header}"></th:block>
+
+</div>
+<div class="container">
+    <a class="btn btn-primary" th:href="${'/types/new'}"> Создать новую категорию </a>
+</div>
+<div class="container" th:if="${not #lists.isEmpty(types)}">
+    <h2> Список категорий </h2>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th th:text="ID"></th>
+            <th th:text="Наименование"></th>
+            <th th:text="Действия"></th>
+        </tr>
+        <tr th:each="type : ${types}">
+            <td th:text="${type.id}"></td>
+            <td th:text="${type.status}"></td>
+            <td>
+                <ul class="list-inline">
+<!--                    <li><a th:href="@{/types/delete/{id}(id=${type.getId()})}" th:text="Удалить"></a></li>-->
+                    <li><a th:href="@{/types/edit/{id}(id=${type.getId()})}" th:text="Изменить"></a></li>
+                    <li><a th:if="${type.getTables().isEmpty()}" th:href="@{/types/delete/{id}(id=${type.getId()})}" th:text="Удалить"></a></li>
+
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

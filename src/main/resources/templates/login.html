@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <title>Login</title>
+    <th:block th:insert="~{fragments/header.html :: head}"></th:block>
+
+</head>
+<body>
+<div class="container">
+
+
+    <h2 th:text="Авторизация"/>
+
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" text="Добро пожаловать, авторизуйтесь"></h3>
+            </div>
+            <div class="panel-body">
+                <div th:if="${logout}" class="alert alert-info" role="alert">Вы успешно вышли</div>
+                <div th:if="${error}" class="alert alert-danger" role="alert">Ошибка в логине или пароле! Либо ваш профиль заблокирован!</div>
+
+                <form method="post" th:href="@{/}">
+                    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+                    <div class="form-group">
+                        <label for="username">Имя пользователя</label>
+                        <input type="text" class="form-control" id="username" placeholder="Введите имя пользователя" name="username"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль пользователя</label>
+                        <input type="password" class="form-control" id="password" placeholder="Введите пароль пользователя" name="password"/>
+                    </div>
+
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-default" th:text="Войти"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

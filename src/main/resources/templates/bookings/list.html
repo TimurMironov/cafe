@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title th:text="'Все брони'"></title>
+
+    <th:block th:insert="~{fragments/header.html :: head}"></th:block>
+</head>
+<body>
+<div class="container">
+    <th:block th:insert="~{fragments/header.html :: header}"></th:block>
+
+    <a class="btn btn-primary" th:href="${'/bookings/check'}"> Создать новую бронь </a>
+
+    <div>
+        <form class="form-horizontal">
+            <div class="form-group">
+
+                    <h3 th:text="'Все имеющиеся брони'"></h3>
+                    <table class="table table-bordered table-hover" id="bookingsTable">
+                        <tr>
+                            <th>ID<br/></th>
+                            <th>Имя гостя<br/></th>
+                            <th>Дата бронирования<br/></th>
+                            <th>Номер столика<br/></th>
+                            <th>Дата визита<br/></th>
+                            <th>На сколько<br/></th>
+                            <th>Администратор<br/></th>
+                            <th>Статус брони<br/></th>
+                            <th>Действия<br/></th>
+                        </tr>
+
+                        <tr th:each="booking : ${bookings}">
+                            <td th:text="${booking.id}"></td>
+                            <td th:text="${booking.visitorName}"></td>
+                            <td th:text="${booking.dateTimeOfBooking}"></td>
+                            <td th:text="${booking.table.number}"></td>
+                            <td th:text="${booking.visitTime}"></td>
+                            <td th:text="${booking.forHowLong}"></td>
+                            <td th:text="${booking.user.username}"></td>
+                            <td th:text="${booking.cancelled?'Отменена':'Активна'}"></td>
+
+                            <td>
+                                <ul class="list-inline">
+                                    <li><a th:href="${'/bookings/delete/' + booking.id}" th:text="Удалить"></a></li>
+                                    <li><a th:href="${'/bookings/cancell/' + booking.id}" th:text="'Снять бронь'"></a></li>
+                                    <li><a th:href="${'/bookings/active/' + booking.id}" th:text="'Активировать'"></a></li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
