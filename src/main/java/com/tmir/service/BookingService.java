@@ -7,11 +7,13 @@ import com.tmir.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class BookingService implements CommonServiceMethods<Booking>{
+public class BookingService implements CommonServiceMethods<Booking> {
 
     private final BookingRepository bookingRepository;
 
@@ -33,7 +35,7 @@ public class BookingService implements CommonServiceMethods<Booking>{
     @Override
     public Booking getById(Integer id) {
         return bookingRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("Бронь столика с id " + id + " не найдена"));
+                .orElseThrow(() -> new NotFoundException("Бронь столика с id " + id + " не найдена"));
     }
 
     @Override
@@ -46,34 +48,65 @@ public class BookingService implements CommonServiceMethods<Booking>{
         bookingRepository.deleteById(id);
     }
 
-    public List<Booking> findBookingByAfterNowAndId(Integer roomId){
+    public List<Booking> findBookingByAfterNowAndId(Integer roomId) {
         List<Booking> bookings = new ArrayList<>();
-        for(Booking booking: bookingRepository.findBookingByVisitTimeAfterNowAAndId(roomId)){
-            if (!booking.getCancelled()){
+        for (Booking booking : bookingRepository.findBookingByVisitTimeAfterNowAAndId(roomId)) {
+            if (!booking.getCancelled()) {
                 bookings.add(booking);
             }
         }
         return bookings;
     }
 
-    public List<Booking> findBookingByUserUsername(String username){
+    public List<Booking> findBookingByUserUsername(String username) {
         return bookingRepository.findBookingsByUser_Username(username);
     }
 
-    public List<Booking> findBookingByAfterNow(){
+    public List<Booking> findBookingByAfterNow() {
         return bookingRepository.findBookingsByVisitTimeAfterNow();
     }
 
-    public Booking convertToBookingFromBookingDTO(BookingDTO bookingDTO){
+    public Booking convertToBookingFromBookingDTO(BookingDTO bookingDTO) {
         return Booking.builder()
                 .id(bookingDTO.getId())
-                    .visitorName(bookingDTO.getVisitorName())
-                        .dateTimeOfBooking(LocalDateTime.now().withNano(0))
-                            .table(tableService.findByNumber(bookingDTO.getTable().getNumber()))
-                                .visitTime(bookingDTO.getVisitTime())
-                                    .forHowLong(bookingDTO.getForHowLong())
-                                        .user(userService.getCurrentLoggedUser())
-                                            .cancelled(false)
-                                                .build();
+                .visitorName(bookingDTO.getVisitorName())
+                .dateTimeOfBooking(LocalDateTime.now().withNano(0))
+                .table(tableService.findByNumber(bookingDTO.getTable().getNumber()))
+                .visitTime(bookingDTO.getVisitTime())
+                .forHowLong(bookingDTO.getForHowLong())
+                .user(userService.getCurrentLoggedUser())
+                .cancelled(false)
+                .build();
+    }
+
+    public List<Booking> createReportList(String fromSTR, String toSTR, String user, Boolean cancelled) {
+
+        List<Booking> allBookings = list();
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        if (!fromSTR.isEmpty()) {
+            LocalDateTime from = LocalDateTime.parse(fromSTR, dateTimeFormatter);
+            allBookings = allBookings.stream().filter(booking -> booking.getVisitTime().isAfter(from))
+                    .collect(Collectors.toList());
+        }
+
+        if (!toSTR.isEmpty()) {
+            LocalDateTime to = LocalDateTime.parse(toSTR, dateTimeFormatter);
+            allBookings = allBookings.stream().filter(booking -> booking.getVisitTime().isBefore(to))
+                    .collect(Collectors.toList());
+        }
+
+        if (!user.isEmpty()) {
+            Integer userId = Integer.valueOf(user);
+            allBookings = allBookings.stream().filter(booking -> booking.getUser().getId().equals(userId))
+                    .collect(Collectors.toList());
+        }
+
+        if (cancelled){
+            allBookings = allBookings.stream().filter(Booking::getCancelled)
+                    .collect(Collectors.toList());
+        }
+        return allBookings;
     }
 }
